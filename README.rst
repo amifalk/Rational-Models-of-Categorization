@@ -15,7 +15,7 @@ components is given via a Dirichlet distribution.
 
 Requirements
 ------------
-These should all run in `Python`_ >= 2.5, with `numpy`_ and `scipy`_. The
+These should all run in `Python`_ >= 3, with `numpy`_ and `scipy`_. The
 plotting in some of the demos will require `matplotlib`_.
 
 .. _Python: http://www.python.org
