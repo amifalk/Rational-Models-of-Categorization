@@ -8,7 +8,6 @@ import os
 import numpy as np
 import numpy.random as nprand
 import random
-from itertools import izip
 import scipy.stats.distributions as dist
 
 #import pdb
@@ -87,7 +86,7 @@ class RationalParticle:
           "MAP": Always joins the maximum a posteriori cluster.
         """
         self.c, self.mu0, self.sigma0sq, self.lambda0, self.a0, self.types = args
-        print self.c
+        print(self.c)
         self.alpha = np.ones((len(self.types), 2)) # a vector of two ones 
         self.alpha0 = sum(self.alpha.T)
         self.stims = []
@@ -180,7 +179,7 @@ class RationalParticle:
         elif self.types[i] == 'd': # if discrete use binomial 
             return self.probClustVal(k, i, val)
         else:
-            raise Exception, "Unrecognized dimension type."
+            raise Exception("Unrecognized dimension type.")
     
     def stimprob(self, stim, k, env=None):
         """
@@ -251,9 +250,9 @@ class RationalParticle:
                 clustpkf = np.ones(len(pk))/float(len(pk)) 
         
         if VERBOSE:
-            print "p(k)s: ", pk
-            print "p(f|k)s: ", pfk
-            print "p(k|f): ", pkf
+            print("p(k)s: ", pk)
+            print("p(f|k)s: ", pfk)
+            print("p(k|f): ", pkf)
         
         self.currentposterior = pkf
         if calcclust:
@@ -284,8 +283,8 @@ class RationalParticle:
         Softmax of P(k|F) + P(0|F)
         """
         if VERBOSE:
-            print "Stim: ", self.stims[stim]
-            print "Partition: ", self.partition
+            print("Stim: ", self.stims[stim])
+            print("Partition: ", str(self.partition))
             #print self.posterior(stim)
         
         post = self.getposterior(stim)
@@ -306,8 +305,8 @@ class RationalParticle:
         winner = np.argmax( self.getposterior( stim ) ) 
         
         if VERBOSE:
-            print "Stim: ", self.stims[stim]
-            print "Partition: " + `self.partition`
+            print("Stim: ", self.stims[stim])
+            print("Partition: " + str(self.partition))
             #print self.posterior(stim)
         
         if not winner in self.partition:
@@ -343,15 +342,15 @@ class RationalParticle:
         elif self.decision == "MAP":
             self.additemMAP( stimnum )
         else:
-            raise Exception, "Invalid decision rule. Valid values are 'Soft' and 'MAP'."
+            raise Exception("Invalid decision rule. Valid values are 'Soft' and 'MAP'.")
     
     def findMAPval(self, stimulus, env):
         """Queried value should be -1."""
         qdim = [x[1] for x in zip(env, range(len(env))) if x[0] == '?']
         if len(qdim) > 1:
-            raise Exception, "ERROR: Multiple dimensions queried."
+            raise Exception("ERROR: Multiple dimensions queried.")
         if len(qdim) == 0:
-            raise Exception, "ERROR: No dimensions queried."
+            raise Exception("ERROR: No dimensions queried.")
         qdim = qdim[0]
         
         stimnum = -1
@@ -409,10 +408,10 @@ def get_zmstims(n):
     Mu2 = [412.5, 45]
     Cov = np.multiply( np.eye( 2 ), [12.5,15] )
     
-    samples = np.vstack([nprand.multivariate_normal( Mu1, Cov, n/2 ),
-                         nprand.multivariate_normal( Mu2, Cov, n/2 )])
+    samples = np.vstack([nprand.multivariate_normal( Mu1, Cov, n//2 ),
+                         nprand.multivariate_normal( Mu2, Cov, n//2 )])
     #nprand.shuffle( samples ) # not shuffling for purposes of demo, stims should end up split in half.
-    labels = np.hstack([np.zeros(n/2),np.ones(n/2)])
+    labels = np.hstack([np.zeros(n//2),np.ones(n//2)])
     withlabels = np.column_stack([samples, labels ])
     nprand.shuffle( withlabels )
     items = withlabels[:,:-1]
@@ -450,18 +449,18 @@ def testcontinuous():
         for s in stimset:
             model.additem_particle( s )
         if VERBOSE:
-            print model.partition
-            print len(model.partition)-1, " cluster(s) formed."
+            print(model.partition)
+            print(len(model.partition)-1, " cluster(s) formed.")
         
         order = np.lexsort(( model.partition, labels ))
         cols = np.column_stack([ labels, model.partition ])
-        print "Actual labels (left) vs. model partition (right)"
-        print cols[order]
+        print("Actual labels (left) vs. model partition (right)")
+        print(cols[order])
         
         # Plotting the outcome:
         for clust in range( model.clusters ):
             thesepoints = []
-            for i in xrange( len( model.partition ) ):
+            for i in range( len( model.partition ) ):
                 if model.partition[i]==clust:
                     thesepoints.append( model.stims[i] )
             thesepoints = np.array( thesepoints )
@@ -514,7 +513,7 @@ def test_anderson_discrete():
     stims = [[0, 0, 0, 0], [0, 0, 1, 0], [1, 1, 0, 0], [1, 1, 1, 0], [1, 0, 0, 1], [1, 0, 1, 1], [0, 1, 0, 1], [0, 1, 1, 1]] # Type II
     types = 'dddd'
     
-    for _ in xrange(1):
+    for _ in range(1):
         args = [.5, \
                 np.mean(stims, 0), \
                 np.var(stims, 0), \
@@ -526,11 +525,11 @@ def test_anderson_discrete():
         #random.shuffle(stims)
         for s in stims:
             model.additem_particle( s )
-        print model.partition
+        print(model.partition)
         
         query = [0]*(len(stims[0])-1) + [-1]
-        print "Prob vals for ", query
-        print model.findMAPval( query, 'k'*(len(stims[0])-1) + '?' )
+        print("Prob vals for ", query)
+        print(model.findMAPval( query, 'k'*(len(stims[0])-1) + '?' ))
 
 
 def main():
